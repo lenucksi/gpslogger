@@ -188,7 +188,7 @@ class Gpx10WriteHandler implements Runnable {
     Location loc;
     private File gpxFile = null;
     private boolean addNewTrackSegment;
-    static final int INITIAL_XML_LENGTH = 343;
+    static final int INITIAL_XML_LENGTH = 344;
 
     public Gpx10WriteHandler(String dateTimeString, File gpxFile, Location loc, boolean addNewTrackSegment) {
         this.dateTimeString = dateTimeString;

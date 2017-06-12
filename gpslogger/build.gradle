@@ -7,11 +7,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.canelmas.let:let-plugin:0.1.10'
         classpath "com.mendhak.gradlecrowdin:crowdin-plugin:0.0.9"
-        classpath 'org.jacoco:org.jacoco.core:0.7.4.201502262128'
+        //classpath 'org.jacoco:org.jacoco.core:0.7.4.201502262128'
+        classpath 'org.jacoco:org.jacoco.core:0.7.9'
         classpath "com.moowork.gradle:gradle-node-plugin:0.13"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
     }
 }
 
@@ -28,6 +30,11 @@ apply from: 'buildtools/ColoredOutput.gradle'
 project.ext.set("TRAVIS_FOLDING", true)
 //Generate help pages
 apply plugin: 'com.moowork.node'
+
+
+apply plugin: 'jacoco' //Sonar Integration
+
+apply plugin: "org.sonarqube"
 
 repositories {
     mavenCentral()
@@ -69,11 +76,13 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            testCoverageEnabled true
         }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            testCoverageEnabled true
         }
     }
 
@@ -97,6 +106,12 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
+
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
     }
 
 
@@ -124,7 +139,7 @@ android {
 
 dependencies {
 
-    compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.android.support:support-v4:23.4.0'
     compile 'com.google.android.gms:play-services-base:8.4.0'
     compile 'com.google.android.gms:play-services-location:8.4.0'
     compile 'com.google.android.gms:play-services-wearable:8.4.0'
@@ -143,13 +158,13 @@ dependencies {
 
 
     //Android lollipop/material features including the Toolbar
-    compile "com.android.support:appcompat-v7:23.1.1"
+    compile "com.android.support:appcompat-v7:23.4.0"
 
     //Recycler view required by material dialog custom URL alert box
-    compile "com.android.support:recyclerview-v7:23.0.1"
+    compile "com.android.support:recyclerview-v7:23.4.0"
 
     //Cardviews
-    compile "com.android.support:cardview-v7:23.0.1"
+    compile "com.android.support:cardview-v7:23.4.0"
 
     //Material dialogs
     //Change to 0.8.5.7 when released
@@ -381,3 +396,60 @@ task deleteReleaseAPKs(group:"build", type:Delete){
 }
 
 clean.dependsOn deleteReleaseAPKs
+
+def instrumentationFileName
+
+//More Sonar integration
+task createTestReports(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+    group = "Reporting"
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/R.class',
+                      '**/R$*.class',
+                      '**/BuildConfig.*',
+                      '**/*$ViewInjector*.*',
+                      '**/*$ViewBinder*.*',
+                      '**/*$MembersInjector*.*',
+                      '**/Manifest*.*',
+                      '**/*Test*.*',
+                      'android/**/*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def testTree = fileTree(dir: "${buildDir}/intermediates/classes/test/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+    def testSrc = "${project.projectDir}/src/test/java"
+
+    sourceDirectories = files([mainSrc])
+
+    classDirectories = files([debugTree])
+
+    executionData = files("${project.buildDir}/jacoco/testDebugUnitTest.exec")
+    def files = fileTree("${buildDir}/outputs/code-coverage/connected/").filter { it.isFile() }.files.name
+    instrumentationFileName = "${buildDir}/outputs/code-coverage/connected/" + files[0];
+}
+
+sonarqube {
+    properties {
+
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "lenucksi-github"
+
+        property "sonar.projectKey", "lenucksi-gpslogger"
+        property "sonar.projectName", "GPS Logger branch with sensors"
+        property "sonar.projectVersion", "${version}"
+
+        property "sonar.sources", "src/main"
+
+        property "sonar.java.source", "7"
+
+        property "sonar.android.lint.report", "build/outputs/lint-results.xml"
+        property "sonar.java.binaries", "build/intermediates/classes/debug"
+        property "sonar.jacoco.reportPath","build/jacoco/testDebugUnitTest.exec"
+        //property "sonar.jacoco.itReportPath", instrumentationFileName
+    }
+}
+
+tasks.sonarqube.dependsOn createTestReports

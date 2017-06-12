@@ -26,7 +26,7 @@ public class Gpx10AnnotateHandlerTest {
         when(loc.hasAccuracy()).thenReturn(false);
 
         String actual =  annotateHandler.getWaypointXml(loc, "2011-09-17T18:45:33Z", "This is the annotation");
-        String expected = "\n<wpt lat=\"12.193\" lon=\"19.111\"><time>2011-09-17T18:45:33Z</time><name>This is the annotation</name><src>MOCK</src></wpt>\n";
+        String expected = "\n<wpt lat=\"12.193\" lon=\"19.111\"><time>2011-09-17T18:45:33Z</time>\n<name>This is the annotation</name><src>MOCK</src></wpt>\n";
 
         assertThat("Basic waypoint XML", actual, is(expected));
     }
@@ -39,7 +39,7 @@ public class Gpx10AnnotateHandlerTest {
         Location loc = MockLocations.builder("MOCK", 12.193, 19.111).withAltitude(9001d).build();
 
         String actual =  annotateHandler.getWaypointXml(loc, "2011-09-17T18:45:33Z", "This is the annotation");
-        String expected = "\n<wpt lat=\"12.193\" lon=\"19.111\"><ele>9001.0</ele><time>2011-09-17T18:45:33Z</time><name>This is the annotation</name><src>MOCK</src></wpt>\n";
+        String expected = "\n<wpt lat=\"12.193\" lon=\"19.111\"><ele>9001.0</ele><time>2011-09-17T18:45:33Z</time>\n<name>This is the annotation</name><src>MOCK</src></wpt>\n";
 
         assertThat("Basic waypoint XML", actual, is(expected));
     }
