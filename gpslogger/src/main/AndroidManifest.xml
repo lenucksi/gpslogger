@@ -18,7 +18,7 @@
                      tools:ignore="MockLocation"/>
     <!-- https://developer.android.com/reference/android/Manifest.permission.html#REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
          Required to ask for Doze mode deactivation -->
-    <!--<uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />-->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
         tools:replace="android:theme"
@@ -43,7 +43,7 @@
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
 
             </intent-filter>
-        </service>
+        </service> 
 
         <activity
             android:name=".GpsMainActivity"
@@ -170,7 +170,7 @@
             </intent-filter>
         </activity>
 
-        <provider android:name=".common.ContentApi" android:authorities="com.mendhak.gpslogger" android:exported="true"
+        <provider android:name=".common.ContentApi" android:authorities="eu.lenucksi.sensorgpslogger" android:exported="true"
                   tools:ignore="ExportedContentProvider"/>
 
     </application>

@@ -7,8 +7,8 @@
 
 
 
-    <string name="app_name">GPSLogger</string>
-    <string name="settings_screen_name">GPSLogger Settings</string>
+    <string name="app_name">Sensor+GPSLogger</string>
+    <string name="settings_screen_name">Sensor+GPSLogger Settings</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="could_not_write_to_file">Could not write to file</string>
@@ -34,7 +34,7 @@
     <string name="btn_stop_logging">Stop Logging</string>
 
 
-    <string name="gpslogger_still_running">GPSLogger is still running.</string>
+    <string name="gpslogger_still_running">Sensor+GPSLogger is still running.</string>
 
     <string name="summary_loggingto">Logging to:</string>
     <string name="summary_loggingto_screen">screen only</string>

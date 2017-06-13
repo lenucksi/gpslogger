@@ -10,7 +10,6 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.canelmas.let:let-plugin:0.1.10'
         classpath "com.mendhak.gradlecrowdin:crowdin-plugin:0.0.9"
-        //classpath 'org.jacoco:org.jacoco.core:0.7.4.201502262128'
         classpath 'org.jacoco:org.jacoco.core:0.7.9'
         classpath "com.moowork.gradle:gradle-node-plugin:0.13"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
@@ -31,9 +30,8 @@ project.ext.set("TRAVIS_FOLDING", true)
 //Generate help pages
 apply plugin: 'com.moowork.node'
 
-
-apply plugin: 'jacoco' //Sonar Integration
-
+//Sonar Integration
+apply plugin: 'jacoco'
 apply plugin: "org.sonarqube"
 
 repositories {
