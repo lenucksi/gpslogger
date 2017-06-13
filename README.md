@@ -1,18 +1,29 @@
-GPSLogger [![Build Status](https://travis-ci.org/mendhak/gpslogger.svg?branch=master)](https://travis-ci.org/mendhak/gpslogger) [![Join the chat at https://gitter.im/gpslogger/Lobby](https://badges.gitter.im/gpslogger/Lobby.svg)](https://gitter.im/gpslogger/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Sensor+GPSLogger [![Build Status](https://travis-ci.org/lenucksi/gpslogger.svg?branch=master)](https://travis-ci.org/lenucksi/gpslogger) [![Join the chat at https://gitter.im/gpslogger/Lobby](https://badges.gitter.im/gpslogger/Lobby.svg)](https://gitter.im/gpslogger/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 =========
 
 
-GPSLogger is an Android app that logs GPS information to various formats (GPX, KML, CSV, NMEA, Custom URL) and has options for uploading (SFTP, Google Drive, Dropbox, Email). This app aims to be as battery efficient as possible.
+Sensor+GPSLogger is an Android app that logs GPS information to various formats (GPX, KML, CSV, NMEA, Custom URL) and has options for uploading (SFTP, Google Drive, Dropbox, Email). 
+It is a direct descendant of [GPSLogger made by Mendhak](http://mendhak.github.com/gpslogger/). The main difference is the addition sensor data logging to the initial GPS logging.
+"Sensor data" references to accelerometer, magnetic field data or later on possibly other device sensors.
 
 [Read about GPSLogger's features here](http://mendhak.github.com/gpslogger/)
+
+While Menhaks original app aims to be as battery efficient as possible and is quite good at that, with the addition of sensor data this is not as possible as before any more.
+This fork tries to still be battery efficient within what is possible, however **it will likely eat your battery for breakfast**.
+ 
+[See here for battery consumption observations](https://github.com/lenucksi/gpslogger/wiki/BatteryConsumption)
+
+This fork was created after discussing feature inclusion in [Issue 524](https://github.com/mendhak/gpslogger/issues/524) and the matching [PR](https://github.com/mendhak/gpslogger/pull/534).
+
+## System requirements
+ - Android 4.x
+ - A phone with an accelerometer and a magnetic field sensor (usually advertised as compass)
 
 ## Download
 
 You can [download it from Google Play](https://play.google.com/store/apps/details?id=com.mendhak.gpslogger).
 
-You can download the APK directly [from the releases](https://github.com/mendhak/gpslogger/releases).
-
-The last Android 2.x release is [here](https://github.com/mendhak/gpslogger/releases/tag/v43).
+You can download the APK directly [from the releases](https://github.com/lenucksi/gpslogger/releases).
 
 ## Contribute
 
@@ -27,24 +38,9 @@ I'm not very good at UIs, so any work with the layouts would be appreciated!
 
 [Licensed under GPL v2](LICENSE.md) | [Third party licenses](assets/text/opensource.md) | [Privacy policy](assets/text/privacypolicy.md)
 
-## Donate
+## Donate to Mendhak for making the original app
 
 [Bitcoin](https://blockchain.info/payment_request?address=14bKk4sR1AD7avuJfBx2izy2FwyqMXEvcY) | [Paypal](https://paypal.me/mendhak) | [LTC](http://ltc.blockr.io/address/info/LP6gPtk1rkXyKYazyUJAkJpyc4Ghp8qxGs)
-
-
-## Verifying
-
-It's good practice to verify downloads.  In recent releases, a PGP signature and an SHA256 checksum will accompany each `.apk`.
-
-Import PGP Public Key from [Keybase.io](https://keybase.io/mendhak) or just `gpg --recv-key 6989CF77490369CFFDCBCD8995E7D75C76CBE9A9`
-
-To verify the integrity and signature:
-
-    $ gpg --verify ~/Downloads/gpslogger-71.apk.asc
-    
-To verify checksum:    
-    
-    $ sha256sum -c ~/Downloads/gpslogger-71.apk.SHA256
 
 
 Setting up the code
