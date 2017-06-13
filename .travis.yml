@@ -6,6 +6,14 @@ jdk: oraclejdk8
 notifications:
   email: false
 
+
+addons:
+  sonarqube:
+    organization: 'lenucksi-github'
+    branches:
+      - master
+      - upstream
+
 env:
   - ANDROID_HOME=$HOME/android-sdk ZIPNAME=sdk-tools-linux-3859397.zip
 
@@ -27,6 +35,9 @@ cache:
 
     # Android build cache (see http://tools.android.com/tech-docs/build-cache)
     - $HOME/.android/build-cache
+
+    # SonarQube data
+    - $HOME/.sonar/cache
 
 before_install:
   - ./gradlew --version
@@ -51,4 +62,4 @@ before_script:
 
 script:
   # skips predex on travis, takes too long, too much memory
-  ./gradlew testDebugUnitTest -Dpre-dex=false -q
+  ./gradlew testDebugUnitTest -Dpre-dex=false -q sonarqube
