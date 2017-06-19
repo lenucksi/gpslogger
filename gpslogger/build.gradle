@@ -80,7 +80,6 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            testCoverageEnabled true
         }
     }
 
@@ -372,17 +371,17 @@ task copyFinalAPK(group:'build') {
             fileName.replace("gpslogger-release.apk", finalApkName)
         }
     }
-        //PGP Sign
-        //Verify with gpg --verify ~/Downloads/gpslogger-71.apk.asc
-    if(file(finalApkName).isFile()){
-        signing {
-            sign file(finalApkName)
-        }
-
-        //SHA256 Checksum
-        //Verify with sha256sum -c ~/Downloads/gpslogger-71.apk.SHA256
-        ant.checksum(file: finalApkName, algorithm: "SHA256", pattern: "{0} {1}")
-    }
+//    //PGP Sign
+//    //Verify with gpg --verify ~/Downloads/gpslogger-71.apk.asc
+//    if(file(finalApkName).isFile()){
+//        signing {
+//            sign file(finalApkName)
+//        }
+//
+//        //SHA256 Checksum
+//        //Verify with sha256sum -c ~/Downloads/gpslogger-71.apk.SHA256
+//        ant.checksum(file: finalApkName, algorithm: "SHA256", pattern: "{0} {1}")
+//    }
 
 }
 
