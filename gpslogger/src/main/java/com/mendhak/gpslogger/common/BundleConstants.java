@@ -21,4 +21,7 @@ public class BundleConstants {
     public static final String COMPASS = "COMPASS";
     public static final String ORIENTATION = "ORIENTATION";
 
+    public static final String RAW_ACCELEROMETER = "RAW_ACCELEROMETER";
+    public static final String RAW_MAGNETICFIELD = "RAW_MAGNETICFIELD";
+
 }

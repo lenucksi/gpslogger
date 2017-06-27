@@ -308,6 +308,7 @@ public class GpsMainActivity extends AppCompatActivity
 
     }
 
+    //TODO: Potential entry point for custom properties
     private void loadPresetProperties() {
 
         //Either look for /<appfolder>/gpslogger.properties or /sdcard/gpslogger.properties

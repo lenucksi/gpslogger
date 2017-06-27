@@ -608,11 +608,21 @@ public class GpsLoggingService extends Service  {
         }
     }
 
+
     /**
-     * Starts the sensor manager
+     * Starts the first sensor to start data acquisition process
      */
-    private void startSensorManager() {
+    void startSensorManager(){
+        startSensorManager(Sensor.TYPE_ACCELEROMETER);
+    }
+
+
+    /**
+     * Starts the sensor manager with a specific sensor
+     */
+    void startSensorManager(int sensor_type) {
         if (preferenceHelper.isSensorDataEnabled()) {
+            LOG.debug("PREFHELPER: Sensordata enabled:"+preferenceHelper.isSensorDataEnabled());
 
             if (gpsLocationListener == null) {
                 //Attach to GPS GeneralLocationListener to have sensordata samples present together with GPS points
@@ -627,18 +637,26 @@ public class GpsLoggingService extends Service  {
             magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD); // Compass -> basically only useful for compass / heading usage
             //gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE); // rate of rotation in rad/s //FIXME: Check for avail and if avail create
 
-            LOG.debug("SESSION: Sensordata enabled:"+session.isSensorEnabled());
-            LOG.debug("PREFHELPER: Sensordata enabled:"+preferenceHelper.isSensorDataEnabled());
 
+            //Activate the desired sensor
             long timestamp = System.currentTimeMillis();
-            LOG.info(String.format("Start requesting sensor updates: %d", timestamp));
-
-            sensorManager.registerListener(gpsLocationListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-            //It turned out that magnetometer sampling is massivly slower in presenting samples than all other sensors, thus request higher rate.
-            sensorManager.registerListener(gpsLocationListener, magnetometer, SensorManager.SENSOR_DELAY_FASTEST);
-            //sensorManager.registerListener(gpsLocationListener, gyroscope, SensorManager.SENSOR_DELAY_UI);
+            switch (sensor_type) {
+                case Sensor.TYPE_ACCELEROMETER:
+                    sensorManager.registerListener(gpsLocationListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                    LOG.info(String.format("Start requesting sensor updates for Accelerometer: %d", timestamp));
+                    break;
+                case Sensor.TYPE_MAGNETIC_FIELD:
+                    //It turned out that magnetometer sampling is massivly slower in presenting samples than all other sensors, thus request higher rate.
+                    sensorManager.registerListener(gpsLocationListener, magnetometer, SensorManager.SENSOR_DELAY_FASTEST);
+                    LOG.info(String.format("Start requesting sensor updates for Magnetic field: %d", timestamp));
+                    break;
+                default:
+                    LOG.error("startSensorManager received unknown Sensor to activate.");
+                    break;
+            }
 
             session.setSensorEnabled(true);
+            LOG.debug("SESSION: Sensordata enabled:"+session.isSensorEnabled());
         } else {
             LOG.debug("startSensorManager: Not activating sensor data collection, as it is not selected.");
         }
@@ -766,15 +784,24 @@ public class GpsLoggingService extends Service  {
     }
 
     /**
-     * Stops the sensor data collection
+     * Stops the sensor data collection for a given sensor or all sensor if sensor is null
      */
-    private void stopSensorManager(){
+    private void stopSensorManager(Sensor sensor){
         if (preferenceHelper.isSensorDataEnabled() || session.isSensorEnabled()){
             if (sensorManager != null) {
-                LOG.debug("Removing sensorDataListener updates");
-                sensorManager.unregisterListener(gpsLocationListener);
+                if (sensor == null){
+                    LOG.debug("Removing sensorDataListener updates");
+                    sensorManager.unregisterListener(gpsLocationListener);
+                } else{
+                    LOG.debug("Removing sensorDataListener updates");
+                    sensorManager.unregisterListener(gpsLocationListener, sensor);
+                }
             }
         }
+    }
+
+    void stopSensorManager(){
+        stopSensorManager(null);
     }
 
     @SuppressWarnings("ResourceType")

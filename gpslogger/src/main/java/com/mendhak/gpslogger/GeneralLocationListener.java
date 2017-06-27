@@ -64,8 +64,8 @@ class GeneralLocationListener implements LocationListener, GpsStatus.Listener, G
     protected ArrayList<SensorDataObject.Orientation> latestOrientation = new ArrayList<>();
 
     //FIXME: These two arrays and their usage is for debug usage. Remove once sensor collection is done.
-    protected ArrayList<SensorEvent> accelerometer = new ArrayList<SensorEvent>();
-    protected ArrayList<SensorEvent> magneticField = new ArrayList<SensorEvent>();
+    protected ArrayList<float[]> accelerometer = new ArrayList<>();
+    protected ArrayList<float[]> magneticField = new ArrayList<>();
 
     private PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
 
@@ -100,6 +100,11 @@ class GeneralLocationListener implements LocationListener, GpsStatus.Listener, G
                 b.putSerializable(BundleConstants.COMPASS, this.latestCompass);
                 b.putSerializable(BundleConstants.ORIENTATION, this.latestOrientation);
 
+                //Extra for Sensordatalogging: Raw values
+                b.putSerializable(BundleConstants.RAW_ACCELEROMETER, this.accelerometer);
+                b.putSerializable(BundleConstants.RAW_MAGNETICFIELD, this.magneticField);
+
+
                 loc.setExtras(b);
                 LOG.debug("general loc listener on loc changed, latest accel:"+Arrays.toString(this.latestAccelerometer.toArray())+"\n latestCompass:"+Arrays.toString(this.latestCompass.toArray())+"\n latestOrientation:"+Arrays.toString(this.latestOrientation.toArray()));
                 loggingService.onLocationChanged(loc);
@@ -111,6 +116,8 @@ class GeneralLocationListener implements LocationListener, GpsStatus.Listener, G
                 this.latestAccelerometer = new ArrayList<>();
                 this.latestCompass = new ArrayList<>();
                 this.latestOrientation  = new ArrayList<>();
+                //this.accelerometer = new ArrayList<>();
+                //this.magneticField = new ArrayList<>();
                 session.setLatestDetectedActivity(null);
             }
 
@@ -234,15 +241,23 @@ class GeneralLocationListener implements LocationListener, GpsStatus.Listener, G
 
         switch (event.sensor.getType()){
             case Sensor.TYPE_ACCELEROMETER:
-                this.accelerometer.add(event);
+                this.accelerometer.add(event.values.clone());
                 this.mGravity = event.values.clone();
+                loggingService.stopSensorManager(); //FIXME: evtl. gezielt sensoren ausmachen
+                LOG.debug(String.format("Got ACCELEROMETER sample, deactivate ACCEL, enable MAGNETIC FIELD"));
+                loggingService.startSensorManager(Sensor.TYPE_MAGNETIC_FIELD);
+                LOG.debug(String.format("Got ACCELEROMETER sample, enabled MAGNETIC FIELD"));
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
-                this.magneticField.add(event);
+                this.magneticField.add(event.values.clone());
                 this.mGeomagnetic = event.values.clone();
+                LOG.debug(String.format("Got MAGNETIC FIELD. Data should be complete. Start calculation"));
+                loggingService.stopSensorManager();
+                calculateSensors(event);
                 break;
             default:
-                LOG.debug(String.format("onSensorChanged undesired type recieved: %d sensor: %s, values: %s",event.sensor.getType(),event.sensor.toString(),Arrays.toString(event.values)));
+                LOG.debug(String.format("onSensorChanged undesired type recieved: %d sensor: %s, values: %s\n stop sensor+reschedule",event.sensor.getType(),event.sensor.toString(),Arrays.toString(event.values)));
+                loggingService.stopSensorManagerAndResetAlarm(System.currentTimeMillis(),null,null,null);
         }
 
         LOG.debug(String.format("onSensorChanged \n accel event list size: %d content %s \n magnetic event list size: %d content %s  " +
@@ -267,6 +282,7 @@ class GeneralLocationListener implements LocationListener, GpsStatus.Listener, G
             In the case of the emulator and a recent Samsung Galaxy phone between 5 and 10 sensor event empirically have been
             found to work well.
          */
+        /*
         if (this.numSensorSamples >= preferenceHelper.getSensorDataSampleSize()) {
             LOG.debug(String.format("Stopping sensor manager, recorded more than %d samples without success completion of measurement",preferenceHelper.getSensorDataSampleSize()));
             loggingService.stopSensorManagerAndResetAlarm(System.currentTimeMillis(),null,null,null);
@@ -276,6 +292,7 @@ class GeneralLocationListener implements LocationListener, GpsStatus.Listener, G
             LOG.debug(String.format("onSensorChanged current number of samples %d of %d",this.numSensorSamples, preferenceHelper.getSensorDataSampleSize()));
             calculateSensors(event);
         }
+        */
     }
 
 
@@ -349,6 +366,7 @@ class GeneralLocationListener implements LocationListener, GpsStatus.Listener, G
                     mGeomagnetic = null;
 
                     LOG.debug("all sensor readings present, calculated data + stop,reset&reschedule sensormanager now");
+                    //TODO: Maybe add the calculated objects into the session instead of this object
                     loggingService.stopSensorManagerAndResetAlarm(current, ao, oo, co);
                     this.numSensorSamples = 0;
                 }
