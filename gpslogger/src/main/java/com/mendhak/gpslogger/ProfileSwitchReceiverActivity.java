@@ -101,8 +101,6 @@ public class ProfileSwitchReceiverActivity extends AppCompatActivity {
         Intent intent = new Intent(ProfileSwitchReceiverActivity.this, GpsMainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        //runterladen, speichern, profil setzen, eventbus für wechsel schicken und toasten
-        //danach finish
         finish();
     }
 

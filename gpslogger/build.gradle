@@ -297,13 +297,13 @@ if (project.hasProperty("CROWDIN_API_KEY")) {
             destination = "$projectDir/src/main/res"
             projectId = 'gpslogger-for-android'
 
-        //Android projects
-        renameMapping = [
-                from: '^([^-]*)/strings.xml$',
-                to  : /values-\1\/strings.xml/
-        ]
+            //Android projects
+            renameMapping = [
+                    from: '^([^-]*)/strings.xml$',
+                    to  : /values-\1\/strings.xml/
+            ]
 
-        excludePattern = '**/*.txt'
+            excludePattern = '**/*.txt'
     }
 
     task crowdin2(group:"crowdin", type:com.mendhak.gradlecrowdin.DownloadTranslationsTask, dependsOn:"crowdin1"){
