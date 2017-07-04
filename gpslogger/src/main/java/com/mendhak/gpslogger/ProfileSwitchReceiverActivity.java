@@ -1,5 +1,6 @@
 package com.mendhak.gpslogger;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -45,6 +46,8 @@ public class ProfileSwitchReceiverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_switch_receiver);
         Uri url = getIntent().getData();
+
+        EventBus.getDefault().register(this);
 
         LOG.debug("Got implicit event with URL:"+url.toString());
 
@@ -94,6 +97,10 @@ public class ProfileSwitchReceiverActivity extends AppCompatActivity {
             }
         }
 
+
+        Intent intent = new Intent(ProfileSwitchReceiverActivity.this, GpsMainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         //runterladen, speichern, profil setzen, eventbus für wechsel schicken und toasten
         //danach finish
         finish();
