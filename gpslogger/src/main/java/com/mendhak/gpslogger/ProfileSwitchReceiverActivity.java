@@ -46,7 +46,9 @@ public class ProfileSwitchReceiverActivity extends AppCompatActivity {
         button.setEnabled(false);
 
         Uri url = getIntent().getData();
+
         LOG.debug("Got implicit event with URL:"+url.toString());
+
         Toast.makeText(this, String.format("Downloading profile from: %s",url.toString()), Toast.LENGTH_LONG).show();
 
         ProfileFetcher fetcher = new ProfileFetcher();
@@ -125,4 +127,5 @@ public class ProfileSwitchReceiverActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
 }

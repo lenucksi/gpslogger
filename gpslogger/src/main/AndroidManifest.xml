@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.mendhak.gpslogger"
-    android:installLocation="auto">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.mendhak.gpslogger"
+          android:installLocation="auto"
+    >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -12,37 +13,40 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-    <uses-permission
-        android:name="android.permission.ACCESS_MOCK_LOCATION"
-        tools:ignore="MockLocation" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"
+                     tools:ignore="MockLocation"/>
+
     <!--
          https://developer.android.com/reference/android/Manifest.permission.html#REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
          Required to ask for Doze mode deactivation
     -->
+
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
+
     <application
-        android:name=".common.AppSettings"
+        tools:replace="android:theme"
         android:allowBackup="true"
         android:icon="@drawable/gpsloggericon3"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        tools:replace="android:theme">
+        android:name="com.mendhak.gpslogger.common.AppSettings"
+        >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <service
-            android:name=".GpsLoggingService"
-            android:exported="true">
+        <service android:name=".GpsLoggingService" android:exported="true">
             <intent-filter>
                 <action android:name="com.mendhak.gpslogger.GpsLoggingService" />
             </intent-filter>
         </service>
+
         <service android:name=".AndroidWearListenerService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+
             </intent-filter>
         </service>
 
@@ -52,55 +56,51 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:uiOptions="splitActionBarWhenNarrow"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainPreferenceActivity"
             android:label="@string/settings_screen_name"
-            android:parentActivityName=".GpsMainActivity">
+            android:parentActivityName=".GpsMainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mendhak.gpslogger.GpsMainActivity" />
-
             <intent-filter>
                 <action android:name="com.mendhak.gpslogger.MAIN_PREFS" />
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="authorize"
-                    android:scheme="gpslogger" />
+                <data android:host="authorize" android:scheme="gpslogger" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Faqtivity"
             android:label="@string/faq_screen_title"
             android:launchMode="singleTask"
-            android:parentActivityName=".GpsMainActivity">
+            android:parentActivityName=".GpsMainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mendhak.gpslogger.GpsMainActivity" />
         </activity>
+
         <activity
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask"
-            android:parentActivityName=".GpsMainActivity">
+            android:parentActivityName=".GpsMainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mendhak.gpslogger.GpsMainActivity" />
 
             <intent-filter>
-
                 <!-- Set from build.gradle, see defaultConfig -->
-                <!-- suppress AndroidDomInspection -->
+                <!--suppress AndroidDomInspection -->
                 <data android:scheme="@string/DROPBOX_DB_SCHEME" />
 
                 <action android:name="android.intent.action.VIEW" />
@@ -109,9 +109,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".shortcuts.ShortcutCreate"
-            android:theme="@style/Theme.AppCompat.Translucent">
+            android:theme="@style/Theme.AppCompat.Translucent" >
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
 
@@ -120,25 +121,25 @@
         </activity>
         <activity
             android:name=".shortcuts.ShortcutStart"
-            android:theme="@style/Theme.AppCompat.Translucent">
+            android:theme="@style/Theme.AppCompat.Translucent" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <activity
             android:name=".shortcuts.ShortcutStop"
-            android:theme="@style/Theme.AppCompat.Translucent">
+            android:theme="@style/Theme.AppCompat.Translucent" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.nononsenseapps.filepicker.FilePickerActivity"
             android:label="@string/app_name"
             android:theme="@style/FilePickerTheme">
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -146,7 +147,7 @@
         <receiver
             android:name=".StartupReceiver"
             android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -154,21 +155,22 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".senders.AlarmReceiver" />
+
         <receiver android:name=".MyPackageUpgradeReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 
-        <!-- android:theme="@style/Theme.AppCompat.Translucent" -->
+        <!--android:theme="@style/Theme.AppCompat.Translucent"-->
         <activity
             android:name=".NotificationAnnotationActivity"
-            android:excludeFromRecents="true"
             android:label=""
-            android:theme="@style/Theme.AppCompat.Translucent">
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:excludeFromRecents="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.category.DEFAULT" />
-
                 <category android:name="com.mendhak.gpslogger.NOTIFICATION_BUTTON" />
             </intent-filter>
         </activity>

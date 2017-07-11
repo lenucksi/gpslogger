@@ -54,12 +54,14 @@ install:
   - echo y | $HOME/android-sdk/tools/bin/sdkmanager 'extras;google;m2repository'
   - echo y | $HOME/android-sdk/tools/bin/sdkmanager 'extras;android;m2repository'
   - echo y | $HOME/android-sdk/tools/bin/sdkmanager 'extras;google;google_play_services'
+  - echo y | $HOME/android-sdk/tools/bin/sdkmanager 'extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2'
+  - echo y | $HOME/android-sdk/tools/bin/sdkmanager 'extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2'
 
 before_script:
   - echo '"Build..."' && echo -en 'travis_fold:start:script.build\\r'
-  - ./gradlew assembleDebugUnitTest -Dpre-dex=false
+  - ./gradlew --no-daemon assembleDebugUnitTest -Dpre-dex=false
   - echo -en 'travis_fold:end:script.build\\r'
 
 script:
   # skips predex on travis, takes too long, too much memory
-  ./gradlew testDebugUnitTest -Dpre-dex=false sonarqube
+  ./gradlew --no-daemon testDebugUnitTest -Dpre-dex=false sonarqube
